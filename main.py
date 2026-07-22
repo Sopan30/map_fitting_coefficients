@@ -279,13 +279,13 @@ if file:
 
                     if export_rows:
                         final_df = pd.concat(export_rows, ignore_index=True)
+                        WorkbookExporter.write_stage_sheet(writer,stage,final_df)
                         if gas_props is not None and compressor_type == "Centrifugal Compressor":
                             scaling_result = curve_fitter.calculate_scaling_factors(final_df, gas_props, acoustic_vel, spec_vol)
                             if scaling_result is not None:
                                 final_df, scaling_info = scaling_result
                                 scaling_info["Stage"] = stage
                                 scaling_rows.append(scaling_info)
-                        WorkbookExporter.write_stage_sheet(writer,stage,final_df)
                         # if scaling_rows:
                         #     pd.DataFrame(scaling_rows).to_excel(writer, sheet_name="Scaling_Factors", index=False)
                         if compressor_type == "Centrifugal Compressor":

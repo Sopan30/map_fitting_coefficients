@@ -3,7 +3,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from scipy.interpolate import CubicSpline
 import numpy as np
-import GasCalculator as gas_calc
+from GasCalculator import GasCalculator as gas_calc
 
 class CurveFitter:
 

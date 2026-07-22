@@ -53,7 +53,7 @@ class CurveFitter:
     def predict(self, model_obj, flow):
 
         if model_obj['type'] == 'spline':
-            return model_obj
+            return model_obj['model']
 
         return model_obj['model'].predict(
             model_obj['poly'].transform(

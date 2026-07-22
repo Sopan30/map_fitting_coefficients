@@ -3,6 +3,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from scipy.interpolate import CubicSpline
 import numpy as np
+import GasCalculator as gas_calc
 
 class CurveFitter:
 
@@ -152,7 +153,7 @@ class CurveFitter:
 
             df["Hpr"] = (
                 df["Head (m)"] *
-                G /
+                gas_calc.G /
                 (acoustic_vel**2)
             )
 

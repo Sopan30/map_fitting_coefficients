@@ -305,6 +305,7 @@ if file:
                             non_df.rename(columns = column_mapping , inplace=True)
                             non_df["Q"] = non_df["flow"]/3600
                             non_df["H"] = (non_df["head"]* gas_calc.G) / 1000.0
+                            non_df["Nn" = non_df["Speed"] * speed_factor
                             non_df["Qn"] = non_df["Q"] * flow_factor
                             non_df["Hp"] = non_df["H"] * head_factor
                             non_df["Pn"] = non_df["P"] * power_factor
@@ -316,6 +317,7 @@ if file:
                                 "PowerCurve": p_coefficients["PowerCurve"]
                             }
                             coefficients_df = pd.DataFrame(combine_coefficients)
+                            st.dataframe(coefficients_df, use_container_width=True)
                             WorkbookExporter.write_stage_sheet(writer,f'{stage}_Coefficients',coefficients_df)
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'poly')
                             coefficients_xml = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'coeff')

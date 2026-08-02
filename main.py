@@ -309,7 +309,7 @@ if file:
                             non_df["Nn"] = non_df["Speed"] * speed_factor
                             non_df["Qn"] = non_df["Q"] * flow_factor
                             non_df["Hp"] = non_df["H"] * head_factor
-                            non_df["Pn"] = non_df["P"] * power_factor
+                            non_df["Pn"] = (non_df["P"] * power_factor) / non_df["Speed"]
                             hp_coefficients = HpFitting().execute_pipeline(non_df)
                             p_coefficients = PFitting().run_calibrations(df = non_df, QrHpScaleFtr = hp_coefficients["HeadCurve"][15])
                             combine_coefficients = {

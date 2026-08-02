@@ -53,7 +53,7 @@ class XMLExporter:
 
         df = df1.copy()
 
-        if compressor_type == "Centrifugal Compressor" & str(dtype).lower() == "poly":
+        if compressor_type == "Centrifugal Compressor" and str(dtype).lower() == "poly":
             column_mapping = {
                 "Speed": "Speed",
                 "Flow (m3/hr)": "Inlet1_ActualVolumetricFlow",

@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from scipy.optimize import minimize
+import streamlit as st
 
 Pwr = True  
 Swr = True 
@@ -196,5 +197,5 @@ class HpFitting:
         fig.add_vline(x=self.QrJoin1, line_width=1.2, line_dash="dash", line_color="orange", annotation_text="Join1 (Surge Limit)")
         fig.add_vline(x=self.QrJoin2, line_width=1.2, line_dash="dash", line_color="purple", annotation_text="Join2 (Stonewall Limit)")
         fig.update_layout(title='Reduced Polytropic Head for Fitted Cases',xaxis_title='Reduced Flow (Qr)',yaxis_title='Reduced Head (Hpr)',template='plotly_white',legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99))
-        fig.show()
+        st.plotly_chart(fig, use_container_width=True)
         return list_of_results

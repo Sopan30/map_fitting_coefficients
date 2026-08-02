@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from scipy.optimize import minimize
+import streamlit as st
+
 N2_FIXED, Pwr, Srgp, Swrp = 1.0, True, True, True
 def round2(value):
     if value == 0: return 0.0
@@ -125,5 +127,5 @@ class PFitting:
         fig.add_vline(x=self.QrJoin1, line_width=1.2, line_dash="dash", line_color="orange", annotation_text="Join1 (Surge Limit)")
         fig.add_vline(x=self.QrJoin2, line_width=1.2, line_dash="dash", line_color="purple", annotation_text="Join2 (Stonewall Limit)")
         fig.update_layout(xaxis_title='Qr', yaxis_title='Pr', xaxis=dict(range=[0.0, np.max(X_fine)*1.1]), template='plotly_white')
-        fig.show()
+        st.plotly_chart(fig, use_container_width=True)
         return list_of_results

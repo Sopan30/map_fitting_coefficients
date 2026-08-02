@@ -184,7 +184,7 @@ class HpFitting:
         # total_sse = opt_res.fun
         # total_rmse = np.sqrt(np.mean(residuals ** 2))
         # max_absolute_error = np.max(np.abs(residuals))
-        list_of_results = {"CoefficientNames": ["A1", "B1", "C1", "A2", "B2", "C2","A3","B3", "C3","N1","N2","QrJoin1","QrJoin2","Qexp","Hexp","QrScale","Yscale","QrMinMaxHead","QrMinMaxPower","FittingAccuracy"],
+        list_of_results = {"Variables": ["A1", "B1", "C1", "A2", "B2", "C2","A3","B3", "C3","N1","N2","QrJoin1","QrJoin2","Qexp","Hexp","QrScale","Yscale","QrMinMaxHead","QrMinMaxPower","FittingAccuracy"],
                                    "HeadCurve": [A1, B1, C1, A2, B2_f, C2_f, A3, B3_f, C3_f, N1, N2, self.QrJoin1, self.QrJoin2, self.q_exp, self.hp_exp, self.q_scale, self.hp_scale, Qr_min_bound,Qr_max_bound, 100-np.mean(abs(residuals)/Y_fine)*100]}
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=X_fine, y=Y_fine, mode='markers', marker=dict(size=6, color='blue', symbol='diamond'), name='Original'))

@@ -305,7 +305,7 @@ if file:
                             non_df.rename(columns = column_mapping , inplace=True)
                             non_df["Q"] = non_df["flow"]/3600
                             non_df["H"] = (non_df["head"]* gas_calc.G) / 1000.0
-                            non_df["Nn" = non_df["Speed"] * speed_factor
+                            non_df["Nn"] = non_df["Speed"] * speed_factor
                             non_df["Qn"] = non_df["Q"] * flow_factor
                             non_df["Hp"] = non_df["H"] * head_factor
                             non_df["Pn"] = non_df["P"] * power_factor

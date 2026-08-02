@@ -314,13 +314,13 @@ if file:
                             hp_coefficients = HpFitting().execute_pipeline(non_df)
                             p_coefficients = PFitting().run_calibrations(df = non_df, QrHpScaleFtr = hp_coefficients["HeadCurve"][15])
                             combine_coefficients = {
-                                "Variables": hp_coefficients["Variables"],
+                                "CoefficientNames": hp_coefficients["CoefficientNames"],
                                 "HeadCurve": hp_coefficients["HeadCurve"],
                                 "PowerCurve": p_coefficients["PowerCurve"]
                             }
                             coefficients_df = pd.DataFrame(combine_coefficients)
-                            idx_head = coefficients_df.index[df['Variables'].eq('QrMinMaxHead')][0]
-                            idx_power = coefficients_df.index[df['Variables'].eq('QrMinMaxPower')][0]
+                            idx_head = coefficients_df.index[df['CoefficientNames'].eq('QrMinMaxHead')][0]
+                            idx_power = coefficients_df.index[df['CoefficientNames'].eq('QrMinMaxPower')][0]
                             tmp = coefficients_df.at[idx_head, 'PowerCurve']
                             coefficients_df.at[idx_head, 'PowerCurve'] = coefficients_df.at[idx_power, 'HeadCurve']
                             coefficients_df.at[idx_power, 'HeadCurve'] = tmp

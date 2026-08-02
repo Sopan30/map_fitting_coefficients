@@ -380,22 +380,36 @@ if file:
         input_filename = os.path.splitext(file.name)[0]
         output_filename = f"{input_filename}_Map_Fiting_{timestamp}.xlsx"
 
+    with st.sidebar:
+        st.subheader("Downloads")
+    
         st.download_button(
             label="Download Regression Workbook",
             data=output.getvalue(),
             file_name=output_filename,
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="workbook_download"
         )
-
+    
         if stage_xml_exports:
-            st.subheader('Stage XML Downloads')
+            st.divider()
+    
             for idx, entry in enumerate(stage_xml_exports):
-                safe_stage_name = re.sub(r'[^A-Za-z0-9._-]+', '_', entry['Stage'])
-                st.download_button(label=f"Download XML for {entry['Stage']} - {entry.get('Attribute','')}",data=entry['XML'],
-                                   file_name=f"{input_filename}_{safe_stage_name}_{entry.get('Attribute','')}_{timestamp}.txt",
-                                   mime="application/octet-stream",key=f"xml_download_{idx}")
-            with st.expander('XML Export Sheet Preview', expanded=False):
-                xml_sheet_df = pd.DataFrame(stage_xml_exports)
-                st.dataframe(xml_sheet_df, use_container_width=True)
-        else:
-            st.info('No tabular data was generated for XML export yet.')
+                safe_stage_name = re.sub(
+                    r'[^A-Za-z0-9._-]+',
+                    '_',
+                    entry['Stage']
+                )
+    
+                st.download_button(
+                    label=f"{entry['Stage']} - {entry.get('Attribute', '')}",
+                    data=entry['XML'],
+                    file_name=(
+                        f"{input_filename}_"
+                        f"{safe_stage_name}_"
+                        f"{entry.get('Attribute', '')}_"
+                        f"{timestamp}.txt"
+                    ),
+                    mime="application/octet-stream",
+                    key=f"xml_download_{idx}"
+                )

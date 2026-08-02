@@ -187,13 +187,13 @@ class HpFitting:
         list_of_results = {"Variables": ["A1", "B1", "C1", "A2", "B2", "C2","A3","B3", "C3","N1","N2","QrJoin1","QrJoin2","Qexp","Hexp","QrScale","Yscale","QrMinMaxHead","QrMinMaxPower","FittingAccuracy"],
                                    "HeadCurve": [A1, B1, C1, A2, B2_f, C2_f, A3, B3_f, C3_f, N1, N2, self.QrJoin1, self.QrJoin2, self.q_exp, self.hp_exp, self.q_scale, self.hp_scale, Qr_min_bound,Qr_min_bound, 100-np.mean(abs(residuals)/Y_fine)*100]}
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=X_fine, y=Y_fine, mode='markers', marker=dict(size=6, color='blue', symbol='diamond'), name='Excel Source Points'))
+        fig.add_trace(go.Scatter(x=X_fine, y=Y_fine, mode='markers', marker=dict(size=6, color='blue', symbol='diamond'), name='Original'))
         X_smooth = np.linspace(np.min(X_fine), np.max(X_fine), num=400)
         Y_smooth = np.zeros_like(X_smooth)
         s_m = X_smooth <= self.QrJoin1; Y_smooth[s_m] = C2_f - np.exp(A2 * (X_smooth[s_m] ** N2) + B2_f)
         n_m = (X_smooth > self.QrJoin1) & (X_smooth < self.QrJoin2); Y_smooth[n_m] = C1 + B1 * np.abs(X_smooth[n_m] - A1)**N1
         w_m = X_smooth >= self.QrJoin2; Y_smooth[w_m] = C3_f + B3_f * X_smooth[w_m] + A3 * (X_smooth[w_m] ** 2)
-        fig.add_trace(go.Scatter(x=X_smooth, y=Y_smooth, mode='lines', line=dict(color='red', width=2.5), name='Dynamic Fit Master Curve'))
+        fig.add_trace(go.Scatter(x=X_smooth, y=Y_smooth, mode='lines', line=dict(color='red', width=2.5), name='Fit'))
         fig.add_vline(x=self.QrJoin1, line_width=1.2, line_dash="dash", line_color="orange", annotation_text="Join1 (Surge Limit)")
         fig.add_vline(x=self.QrJoin2, line_width=1.2, line_dash="dash", line_color="purple", annotation_text="Join2 (Stonewall Limit)")
         fig.update_layout(title='Reduced Polytropic Head for Fitted Cases',xaxis_title='Reduced Flow (Qr)',yaxis_title='Reduced Head (Hpr)',template='plotly_white',legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99))

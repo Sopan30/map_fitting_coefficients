@@ -12,6 +12,7 @@ from UnitConverter import UnitConverter
 from XMLExporter import XMLExporter
 from WorkbookExporter import WorkbookExporter
 from PlotManager import PlotManager
+from HpFitting import HpFitting
 
 gas_calc = GasCalculator()
 curve_fitter = CurveFitter()
@@ -286,8 +287,8 @@ if file:
                                 final_df, scaling_info = scaling_result
                                 scaling_info["Stage"] = stage
                                 scaling_rows.append(scaling_info)
-                        # if scaling_rows:
-                        #     pd.DataFrame(scaling_rows).to_excel(writer, sheet_name="Scaling_Factors", index=False)
+                        if scaling_rows:
+                            pd.DataFrame(scaling_rows).to_excel(writer, sheet_name="Scaling_Factors", index=False)
                         if compressor_type == "Centrifugal Compressor":
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'poly')
                         else:

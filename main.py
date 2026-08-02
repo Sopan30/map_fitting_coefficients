@@ -319,6 +319,11 @@ if file:
                                 "PowerCurve": p_coefficients["PowerCurve"]
                             }
                             coefficients_df = pd.DataFrame(combine_coefficients)
+                            idx_head = coefficients_df.index[df['Variables'].eq('QrMinMaxHead')][0]
+                            idx_power = coefficients_df.index[df['Variables'].eq('QrMinMaxPower')][0]
+                            tmp = coefficients_df.at[idx_head, 'PowerCurve']
+                            coefficients_df.at[idx_head, 'PowerCurve'] = coefficients_df.at[idx_power, 'HeadCurve']
+                            coefficients_df.at[idx_power, 'HeadCurve'] = tmp
                             # st.dataframe(coefficients_df, use_container_width=True)
                             WorkbookExporter.write_stage_sheet(writer,f'{stage}_Coefficients',coefficients_df)
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'poly')

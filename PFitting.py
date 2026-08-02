@@ -116,7 +116,7 @@ class PFitting:
         final_preds, B2_v, B3_v, C2_v, C3_v = evaluate_master_power_curve(X_fine, A2, N2, A1, B1, C1, N1, A3, self.QrJoin1, self.QrJoin2)
         residuals = Y_fine - final_preds
         list_of_results = {
-            "CoefficientNames": ["A1", "B1", "C1", "A2", "B2", "C2", "A3", "B3", "C3", "N1", "N2", "QrJoin1", "QrJoin2", "Qexp", "Hexp", "QrScale", "Yscale", "QrMinMaxHead", "QrMinMaxPower", "FittingAccuracy"],
+            "Variables": ["A1", "B1", "C1", "A2", "B2", "C2", "A3", "B3", "C3", "N1", "N2", "QrJoin1", "QrJoin2", "Qexp", "Hexp", "QrScale", "Yscale", "QrMinMaxHead", "QrMinMaxPower", "FittingAccuracy"],
             "PowerCurve": [A1, B1, C1, A2, B2_v, C2_v, A3, B3_v, C3_v, N1, N2, self.QrJoin1, self.QrJoin2, self.q_exp, self.p_exp, self.q_scale, self.p_scale, Qr_min_bound, Qr_max_bound, 100.0 - np.mean(np.abs(residuals) / Y_fine) * 100.0]
         }
         fig = go.Figure()

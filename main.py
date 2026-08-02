@@ -64,6 +64,7 @@ if file:
     side_stream_df = pd.DataFrame()
     NumberOfStages = 1
     fatal_error = None
+    coefficients_xml = None
 
     try:
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
@@ -320,7 +321,7 @@ if file:
                             st.dataframe(coefficients_df, use_container_width=True)
                             WorkbookExporter.write_stage_sheet(writer,f'{stage}_Coefficients',coefficients_df)
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'poly')
-                            coefficients_xml = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'coeff')
+                            coefficients_xml = XMLExporter.dataframe_to_tabular_xml(coefficients_df,compressor_type,'coeff')
                         else:
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'custom')
                         # stage_xml_exports.append({'Stage': stage, 'XML': xml_content})
@@ -388,15 +389,11 @@ if file:
 
         if stage_xml_exports:
             st.subheader('Stage XML Downloads')
-            for entry in stage_xml_exports:
+            for idx, entry in enumerate(stage_xml_exports):
                 safe_stage_name = re.sub(r'[^A-Za-z0-9._-]+', '_', entry['Stage'])
-                st.download_button(
-                    label=f"Download XML for {entry['Stage']}",
-                    data=entry['XML'],
-                    file_name=f"{input_filename}_{safe_stage_name}_{timestamp}.txt",
-                    mime="application/octet-stream"
-                )
-
+                st.download_button(label=f"Download XML for {entry['Stage']} - {entry.get('Attribute','')}",data=entry['XML'],
+                                   file_name=f"{input_filename}_{safe_stage_name}_{entry.get('Attribute','')}_{timestamp}.txt",
+                                   mime="application/octet-stream",key=f"xml_download_{idx}")
             with st.expander('XML Export Sheet Preview', expanded=False):
                 xml_sheet_df = pd.DataFrame(stage_xml_exports)
                 st.dataframe(xml_sheet_df, use_container_width=True)

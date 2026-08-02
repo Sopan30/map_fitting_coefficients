@@ -310,7 +310,7 @@ if file:
                             non_df["Hp"] = non_df["H"] * head_factor
                             non_df["Pn"] = non_df["P"] * power_factor
                             hp_coefficients = HpFitting().execute_pipeline(non_df)
-                            p_coefficients = PFitting().run_calibrations(df = non_df, QrHpScaleFtr = hp_coefficient["HeadCurve"][15])
+                            p_coefficients = PFitting().run_calibrations(df = non_df, QrHpScaleFtr = hp_coefficients["HeadCurve"][15])
                             combine_coefficients = {
                                 "Variables": hp_coefficients["Variables"],
                                 "HeadCurve": hp_coefficients["HeadCurve"],

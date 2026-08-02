@@ -84,8 +84,8 @@ if file:
                     gas_props = None
                     
                     if not prop_df.empty:
-                        st.subheader('Operating Conditions')
-                        st.dataframe(prop_df, use_container_width=True)
+                        #st.subheader('Operating Conditions')
+                        # st.dataframe(prop_df, use_container_width=True)
                         for _, row in prop_df.iterrows():
                             property_rows.append([stage, row['Parameter'], row['Value'], row['Units']])
                         gas_props = gas_calc.gas_properties_from_df(prop_df)
@@ -112,7 +112,7 @@ if file:
                                     {'Parameter': 'Polytropic Head', 'Value': f"{head_factor:.5e}", 'Units': 'kJ/kg'},
                                     {'Parameter': 'Power', 'Value': f"{power_factor:.5e}", 'Units': 'kW'}
                                 ])
-                                st.dataframe(derived_df, use_container_width=True)
+                                #st.dataframe(derived_df, use_container_width=True)
                                 
                                 for _, row in derived_df.iterrows():
                                     property_rows.append([stage, row['Parameter'], row['Value'], row['Units']])
@@ -157,7 +157,7 @@ if file:
                          'flow_unit': b['flow_unit'], 'value_unit': b['value_unit']}
                         for b in blocks
                     ])
-                    st.dataframe(block_summary)
+                    # st.dataframe(block_summary)
 
                     stage_models = {}
                     stage_parameters = []
@@ -319,7 +319,7 @@ if file:
                                 "PowerCurve": p_coefficients["PowerCurve"]
                             }
                             coefficients_df = pd.DataFrame(combine_coefficients)
-                            st.dataframe(coefficients_df, use_container_width=True)
+                            # st.dataframe(coefficients_df, use_container_width=True)
                             WorkbookExporter.write_stage_sheet(writer,f'{stage}_Coefficients',coefficients_df)
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'poly')
                             coefficients_xml = XMLExporter.dataframe_to_tabular_xml(coefficients_df,compressor_type,'coeff')

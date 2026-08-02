@@ -53,8 +53,7 @@ class XMLExporter:
 
         df = df1.copy()
 
-        if compressor_type == "Centrifugal Compressor":
-
+        if compressor_type == "Centrifugal Compressor" & str(dtype).lower() == "poly":
             column_mapping = {
                 "Speed": "Speed",
                 "Flow (m3/hr)": "Inlet1_ActualVolumetricFlow",
@@ -73,37 +72,20 @@ class XMLExporter:
                 "OperatingPolyEff",
                 "PresRatio"
             ]
-
-            df.rename(
-                columns=column_mapping,
-                inplace=True
-            )
-
-            df.drop(
-                columns=["Power"],
-                inplace=True,
-                errors="ignore"
-            )
-
-            missing_cols = [
-                c
-                for c in required_cols
-                if c not in df.columns
-            ]
-
+            
+            df.rename(columns=column_mapping, inplace=True)
+            df.drop(columns=["Power"], inplace=True, errors="ignore")
+            
+            missing_cols = [c for c in required_cols if c not in df.columns ]
             for col in missing_cols:
                 df[col] = np.nan
-
             df = df[required_cols]
 
         elif str(dtype).lower() == "custom":
-
-            df.drop(
-                columns=["PressureRatio"],
-                inplace=True,
-                errors="ignore"
-            )
-
+            df.drop(columns=["PressureRatio"] , inplace=True , errors="ignore")
+        else:
+            pass
+            
         parts = []
 
         parts.append(

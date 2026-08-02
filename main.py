@@ -385,7 +385,7 @@ if file:
         st.subheader("Downloads")
     
         st.download_button(
-            label="Download Regression Workbook",
+            label="Regression Workbook",
             data=output.getvalue(),
             file_name=output_filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

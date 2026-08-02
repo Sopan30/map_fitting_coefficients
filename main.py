@@ -13,6 +13,7 @@ from XMLExporter import XMLExporter
 from WorkbookExporter import WorkbookExporter
 from PlotManager import PlotManager
 from HpFitting import HpFitting
+from PFitting import PFitting
 
 gas_calc = GasCalculator()
 curve_fitter = CurveFitter()
@@ -281,20 +282,51 @@ if file:
                     if export_rows:
                         final_df = pd.concat(export_rows, ignore_index=True)
                         WorkbookExporter.write_stage_sheet(writer,stage,final_df)
-                        if gas_props is not None and compressor_type == "Centrifugal Compressor":
-                            scaling_result = curve_fitter.calculate_scaling_factors(final_df, gas_props, acoustic_vel, spec_vol)
-                            if scaling_result is not None:
-                                final_df, scaling_info = scaling_result
-                                scaling_info["Stage"] = stage
-                                scaling_rows.append(scaling_info)
-                        if scaling_rows:
-                            pd.DataFrame(scaling_rows).to_excel(writer, sheet_name="Scaling_Factors", index=False)
+                        # if gas_props is not None and compressor_type == "Centrifugal Compressor":
+                        #     scaling_result = curve_fitter.calculate_scaling_factors(final_df, gas_props, acoustic_vel, spec_vol)
+                        #     if scaling_result is not None:
+                        #         final_df, scaling_info = scaling_result
+                        #         scaling_info["Stage"] = stage
+                        #         scaling_rows.append(scaling_info)
+                        # if scaling_rows:
+                        #     pd.DataFrame(scaling_rows).to_excel(writer, sheet_name="Scaling_Factors", index=False)
                         if compressor_type == "Centrifugal Compressor":
+                            non_df = final_df.copy()
+                            column_mapping = {
+                                                "Speed": "Speed",
+                                                "Flow (m3/hr)": "flow",
+                                                "Head (m)": "head",
+                                                "Efficiency (%)": "eff",
+                                                "Efficiency (%, calculated)": "eff",
+                                                "Power (kW)": "P",
+                                                "Power (kW, calculated)": "P",
+                                                "Pressure Ratio": "PR"
+                            }
+                            non_df.rename(columns = column_mapping , inplace=True)
+                            non_df["Q"] = non_df["flow"]/3600
+                            non_df["H"] = (non_df["head"]* gas_calc.G) / 1000.0
+                            non_df["Qn"] = non_df["Q"] * flow_factor
+                            non_df["Hp"] = non_df["H"] * head_factor
+                            non_df["Pn"] = non_df["P"] * power_factor
+                            hp_coefficients = HpFitting().execute_pipeline(non_df)
+                            p_coefficients = PFitting().run_calibrations(df = non_df, QrHpScaleFtr = hp_coefficient["HeadCurve"][15])
+                            combine_coefficients = {
+                                "Variables": hp_coefficients["Variables"],
+                                "HeadCurve": hp_coefficients["HeadCurve"],
+                                "PowerCurve": p_coefficients["PowerCurve"]
+                            }
+                            coefficients_df = pd.DataFrame(combine_coefficients)
+                            WorkbookExporter.write_stage_sheet(writer,f'{stage}_Coefficients',coefficients_df)
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'poly')
+                            coefficients_xml = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'coeff')
                         else:
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'custom')
-                        stage_xml_exports.append({'Stage': stage, 'XML': xml_content})
-                    
+                        # stage_xml_exports.append({'Stage': stage, 'XML': xml_content})
+                        if coefficients_xml:
+                            stage_xml_exports.append({"Attribute":"PolyPerformanceCoeff","Stage": stage, "XML": coefficients_xml})
+                        stage_xml_exports.append({"Attribute": ("PolyPerformanceData" if compressor_type == "Centrifugal Compressor"
+                                                                else f"Stage{NumberOfStages}_CustomPerformanceDataInput"),"Stage": stage,"XML": xml_content})
+                            
                     if compressor_type != "Centrifugal Compressor":
                         final_df.insert(0,'NumberOfStages',[NumberOfStages] * len(final_df))
                         remap={f'Stage{NumberOfStages}_MassFlow':'Stage1_MassFlow',

@@ -126,6 +126,6 @@ class PFitting:
         fig.add_trace(go.Scatter(x=X_smooth, y=Y_smooth, mode='lines', line=dict(color='red', width=2.5), name='Fit'))
         fig.add_vline(x=self.QrJoin1, line_width=1.2, line_dash="dash", line_color="orange", annotation_text="Join1 (Surge Limit)")
         fig.add_vline(x=self.QrJoin2, line_width=1.2, line_dash="dash", line_color="purple", annotation_text="Join2 (Stonewall Limit)")
-        fig.update_layout(title='Reduced Power for Fitted Cases',xaxis_title='Reduced Flow (Qr)',yaxis_title='Reduced Power (Pr)',template='plotly_white',legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99))
+        fig.update_layout(title='Reduced Power for Fitted Cases',xaxis_title='Reduced Flow (Qr)',yaxis_title='Reduced Power (Pr)',template='plotly_white',legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99),margin=dict(l=20, r=180, t=40, b=20))
         st.plotly_chart(fig, use_container_width=True)
         return list_of_results

@@ -96,128 +96,128 @@ class CurveFitter:
 
         return best_name, best_model
 
-    def calculate_scaling_factors(
-        self,
-        final_df,
-        gas_props,
-        acoustic_vel,
-        spec_vol
-    ):
+    # def calculate_scaling_factors(
+    #     self,
+    #     final_df,
+    #     gas_props,
+    #     acoustic_vel,
+    #     spec_vol
+    # ):
 
-        if gas_props is None:
-            return None
+    #     if gas_props is None:
+    #         return None
 
-        required_cols = {
-            "Speed",
-            "Flow (m3/hr)"
-        }
+    #     required_cols = {
+    #         "Speed",
+    #         "Flow (m3/hr)"
+    #     }
 
-        if not required_cols.issubset(final_df.columns):
-            return None
+    #     if not required_cols.issubset(final_df.columns):
+    #         return None
 
-        diameter = gas_props["diameter_m"]
+    #     diameter = gas_props["diameter_m"]
 
-        q_factor = (
-            1.0 /
-            (acoustic_vel * diameter**2)
-        )
+    #     q_factor = (
+    #         1.0 /
+    #         (acoustic_vel * diameter**2)
+    #     )
 
-        hp_factor = (
-            1000.0 /
-            (acoustic_vel**2)
-        )
+    #     hp_factor = (
+    #         1000.0 /
+    #         (acoustic_vel**2)
+    #     )
 
-        p_factor = (
-            1000.0 *
-            spec_vol /
-            (
-                acoustic_vel**2 *
-                diameter**3 *
-                (2 * np.pi / 60.0)
-            )
-        )
+    #     p_factor = (
+    #         1000.0 *
+    #         spec_vol /
+    #         (
+    #             acoustic_vel**2 *
+    #             diameter**3 *
+    #             (2 * np.pi / 60.0)
+    #         )
+    #     )
 
-        df = final_df.copy()
+    #     df = final_df.copy()
 
-        flow_m3s = (
-            df["Flow (m3/hr)"] / 3600.0
-        )
+    #     flow_m3s = (
+    #         df["Flow (m3/hr)"] / 3600.0
+    #     )
 
-        df["Qr"] = (
-            df["Speed"] *
-            flow_m3s *
-            q_factor
-        )
+    #     df["Qr"] = (
+    #         df["Speed"] *
+    #         flow_m3s *
+    #         q_factor
+    #     )
 
-        if "Head (m)" in df.columns:
+    #     if "Head (m)" in df.columns:
 
-            df["Hpr"] = (
-                df["Head (m)"] *
-                gas_calc.G /
-                (acoustic_vel**2)
-            )
+    #         df["Hpr"] = (
+    #             df["Head (m)"] *
+    #             gas_calc.G /
+    #             (acoustic_vel**2)
+    #         )
 
-        if "Power (kW)" in df.columns:
+    #     if "Power (kW)" in df.columns:
 
-            df["Pnr"] = (
-                df["Power (kW)"] *
-                p_factor
-            )
+    #         df["Pnr"] = (
+    #             df["Power (kW)"] *
+    #             p_factor
+    #         )
 
-        scaling = {}
+    #     scaling = {}
 
-        if "Hpr" in df.columns:
+    #     if "Hpr" in df.columns:
 
-            qr_max = df["Qr"].max()
-            hpr_max = df["Hpr"].max()
+    #         qr_max = df["Qr"].max()
+    #         hpr_max = df["Hpr"].max()
 
-            qr_scale_head = 1.0
-            hpr_scale = 1.0
+    #         qr_scale_head = 1.0
+    #         hpr_scale = 1.0
 
-            if hpr_max > qr_max:
-                qr_scale_head = round(
-                    hpr_max / qr_max,
-                    4
-                )
+    #         if hpr_max > qr_max:
+    #             qr_scale_head = round(
+    #                 hpr_max / qr_max,
+    #                 4
+    #             )
 
-            elif qr_max > hpr_max:
-                hpr_scale = round(
-                    qr_max / hpr_max,
-                    4
-                )
+    #         elif qr_max > hpr_max:
+    #             hpr_scale = round(
+    #                 qr_max / hpr_max,
+    #                 4
+    #             )
 
-            scaling.update({
-                "Qr_Max_Head": qr_max,
-                "Hpr_Max": hpr_max,
-                "Qr_Scale_Head": qr_scale_head,
-                "Hpr_Scale": hpr_scale
-            })
+    #         scaling.update({
+    #             "Qr_Max_Head": qr_max,
+    #             "Hpr_Max": hpr_max,
+    #             "Qr_Scale_Head": qr_scale_head,
+    #             "Hpr_Scale": hpr_scale
+    #         })
 
-        if "Pnr" in df.columns:
+    #     if "Pnr" in df.columns:
 
-            qr_max = df["Qr"].max()
-            pnr_max = df["Pnr"].max()
+    #         qr_max = df["Qr"].max()
+    #         pnr_max = df["Pnr"].max()
 
-            qr_scale_power = 1.0
-            pnr_scale = 1.0
+    #         qr_scale_power = 1.0
+    #         pnr_scale = 1.0
 
-            if pnr_max > qr_max:
-                qr_scale_power = round(
-                    pnr_max / qr_max,
-                    4
-                )
+    #         if pnr_max > qr_max:
+    #             qr_scale_power = round(
+    #                 pnr_max / qr_max,
+    #                 4
+    #             )
 
-            elif qr_max > pnr_max:
-                pnr_scale = round(
-                    qr_max / pnr_max,
-                    4
-                )
+    #         elif qr_max > pnr_max:
+    #             pnr_scale = round(
+    #                 qr_max / pnr_max,
+    #                 4
+    #             )
 
-            scaling.update({
-                "Qr_Max_Power": qr_max,
-                "Pnr_Max": pnr_max,
-                "Qr_Scale_Power": qr_scale_power,
-                "Pnr_Scale": pnr_scale
-            })
+    #         scaling.update({
+    #             "Qr_Max_Power": qr_max,
+    #             "Pnr_Max": pnr_max,
+    #             "Qr_Scale_Power": qr_scale_power,
+    #             "Pnr_Scale": pnr_scale
+    #         })
 
-        return df, scaling
+    #     return df, scaling

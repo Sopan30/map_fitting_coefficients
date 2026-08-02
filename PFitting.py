@@ -120,10 +120,10 @@ class PFitting:
             "PowerCurve": [A1, B1, C1, A2, B2_v, C2_v, A3, B3_v, C3_v, N1, N2, self.QrJoin1, self.QrJoin2, self.q_exp, self.p_exp, self.q_scale, self.p_scale, Qr_max_bound, Qr_max_bound, 100.0 - np.mean(np.abs(residuals) / Y_fine) * 100.0]
         }
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=X_fine, y=Y_fine, mode='markers', marker=dict(size=6, color='green'), name='Excel Points'))
+        fig.add_trace(go.Scatter(x=X_fine, y=Y_fine, mode='markers', marker=dict(size=6, color='green'), name='Original'))
         X_smooth = np.linspace(0.0, np.max(X_fine), num=500)
         Y_smooth, _, _, _, _ = evaluate_master_power_curve(X_smooth, A2, N2, A1, B1, C1, N1, A3, self.QrJoin1, self.QrJoin2)
-        fig.add_trace(go.Scatter(x=X_smooth, y=Y_smooth, mode='lines', line=dict(color='red', width=2.5), name='Fit Curve'))
+        fig.add_trace(go.Scatter(x=X_smooth, y=Y_smooth, mode='lines', line=dict(color='red', width=2.5), name='Fit'))
         fig.add_vline(x=self.QrJoin1, line_width=1.2, line_dash="dash", line_color="orange", annotation_text="Join1 (Surge Limit)")
         fig.add_vline(x=self.QrJoin2, line_width=1.2, line_dash="dash", line_color="purple", annotation_text="Join2 (Stonewall Limit)")
         fig.update_layout(title='Reduced Power for Fitted Cases',xaxis_title='Reduced Flow (Qr)',yaxis_title='Reduced Power (Pr)',template='plotly_white',legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99))

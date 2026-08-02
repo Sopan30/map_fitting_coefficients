@@ -297,6 +297,7 @@ if file:
                                                 "Speed": "Speed",
                                                 "Flow (m3/hr)": "flow",
                                                 "Head (m)": "head",
+                                                "Head (m, calculated))": "head",
                                                 "Efficiency (%)": "eff",
                                                 "Efficiency (%, calculated)": "eff",
                                                 "Power (kW)": "P",

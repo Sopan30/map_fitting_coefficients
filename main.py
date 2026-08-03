@@ -340,7 +340,7 @@ if file:
                             coefficients_df.at[idx_head, 'PowerCurve'] = coefficients_df.at[idx_power, 'HeadCurve']
                             coefficients_df.at[idx_power, 'HeadCurve'] = tmp
                             coefficients_df.rename(columns={'Variables':'CoefficientNames'},inplace=True)
-                            # st.dataframe(coefficients_df, use_container_width=True)
+                            st.dataframe(coefficients_df, use_container_width=True)
                             WorkbookExporter.write_stage_sheet(writer,f'{stage}_Coefficients',coefficients_df)
                             xml_content = XMLExporter.dataframe_to_tabular_xml(final_df,compressor_type,'poly')
                             coefficients_xml = XMLExporter.dataframe_to_tabular_xml(coefficients_df,compressor_type,'coeff')

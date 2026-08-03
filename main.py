@@ -26,7 +26,7 @@ with st.sidebar:
     st.header("Blank Template")
     with open("AssetName_CC.xlsx", "rb") as file:
         st.download_button(
-            label="Download Master Template",
+            label="**Download Master Template**",
             data=file.read(),
             file_name="AssetName_CC.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -36,7 +36,7 @@ with st.sidebar:
         "Download the template, fill in the required fields, "
         "and upload it back for processing."
     )
-compressor_type = st.radio("Select Compressor Type",["Centrifugal Compressor", "Multi-Side Stream Compressor"],horizontal=True)
+compressor_type = st.radio("**Select Compressor Type**",["Centrifugal Compressor", "Multi-Side Stream Compressor"],horizontal=True)
 if compressor_type != "Centrifugal Compressor":
     st.warning(
         """
@@ -47,7 +47,7 @@ if compressor_type != "Centrifugal Compressor":
             - Temperature
             - Molecular Weight (MW)
             - Compressibility (Z)
-            - Isentropic Exponent (k)
+            - Isentropic Exponent (k)\n
         Incorrect operating conditions will result in incorrect Mass Flow and performance calculations.
         """)
 else:
@@ -59,14 +59,14 @@ else:
             - Temperature
             - Molecular Weight (MW)
             - Compressibility (Z)
-            - Isentropic Exponent (k)
+            - Isentropic Exponent (k)\n
         Incorrect operating conditions will result in incorrect Mass Flow and performance calculations.
         """)
 
 method = st.sidebar.selectbox('Regression Method',
     ['Auto Best Fit','Linear','Quadratic','Cubic','4th Order','5th Order','Spline'])
 points = st.sidebar.slider('Number of Points',10,50,15)
-file = st.file_uploader('Upload Workbook', type=['xlsx'])
+file = st.file_uploader('Upload Performance Curve Template', type=['xlsx'])
 
 if file:
     xls = pd.ExcelFile(file)

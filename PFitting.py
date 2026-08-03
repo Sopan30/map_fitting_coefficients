@@ -71,7 +71,7 @@ class PFitting:
         Qr_min_bound, Qr_max_bound = np.min(X_fine), np.max(X_fine)
         self.QrJoin1 = Qr_min_bound + 0.25 * (X_fine[np.argmax(Y_fine)] - Qr_min_bound) if Srgp else Qr_min_bound
         # self.QrJoin2 = Qr_max_bound - 0.1 * (Qr_max_bound - X_fine[np.argmax(Y_fine)]) if Swrp else Qr_max_bound
-        self.QrJoin2 = Qr_max_bound + 0.75 * (Qr_max_bound - X_fine[np.argmax(Y_fine)]) if Swrp else Qr_max_bound
+        self.QrJoin2 = Qr_min_bound + 0.75 * (Qr_max_bound - X_fine[np.argmax(Y_fine)]) if Swrp else Qr_max_bound
         test_x_norm = np.linspace(self.QrJoin1, self.QrJoin2, num=4)
         PrPLF_Nodes = np.interp(test_x_norm, X_fine, Y_fine)
         N1_i, G10_val = 2.0, float(np.max(node_y_refined))

@@ -129,6 +129,6 @@ class PFitting:
         fig.add_vline(x=self.QrJoin1, line_width=1.2, line_dash="dash", line_color="orange", annotation_text="Join1 (Surge Limit)")
         fig.add_vline(x=self.QrJoin2, line_width=1.2, line_dash="dash", line_color="purple", annotation_text="Join2 (Stonewall Limit)")
         fig.update_layout(title='Reduced Power for Fitted Cases',xaxis_title='Reduced Flow (Qr)',yaxis_title='Reduced Power (Pr)',template='plotly_white')#,legend=dict(yanchor="bottom", y=0.99, xanchor="right", x=0.99))
-        fig.update_layout(title='Reduced Power for Fitted Cases',xaxis_title='Reduced Flow (Qr)',yaxis_title='Reduced Power (Pr)',template='plotly_white',xaxis=dict(range=[Qr_min_bound*0.8, Qr_max_bound*1.2]),yaxis=dict(range=[np.min(Y_fine)*0.8, np.max(Y_fine)*1.2]))
+        fig.update_layout(title='Reduced Power for Fitted Cases',xaxis_title='Reduced Flow (Qr)',yaxis_title='Reduced Power (Pr)',template='plotly_white',xaxis=dict(range=[0, Qr_max_bound*1.15]),yaxis=dict(range=[np.min(Y_fine)*0.8, np.max(Y_fine)*1.15]))
         st.plotly_chart(fig, use_container_width=True)
         return list_of_results

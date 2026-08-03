@@ -5,6 +5,7 @@ from io import BytesIO
 from datetime import datetime
 import os
 import re
+from pathlib import Path
 from ExcelParser import ExcelParser
 from CurveFitter import CurveFitter
 from GasCalculator import GasCalculator
@@ -21,6 +22,20 @@ plot_manager = PlotManager(curve_fitter)
 
 st.set_page_config(page_title='Compressor Curve Regression', layout='wide')
 st.title('Compressor Curve Regression Tool')
+with st.sidebar:
+    st.header("Blank Template")
+    with open("AssetName_CC.xlsx", "rb") as file:
+        st.download_button(
+            label="Download Master Template",
+            data=file.read(),
+            file_name="AssetName_CC.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True
+        )
+    st.caption(
+        "Download the template, fill in the required fields, "
+        "and upload it back for processing."
+    )
 compressor_type = st.radio("Select Compressor Type",["Centrifugal Compressor", "Multi-Side Stream Compressor"],horizontal=True)
 if compressor_type != "Centrifugal Compressor":
     st.warning(

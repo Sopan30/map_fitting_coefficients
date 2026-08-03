@@ -21,7 +21,7 @@ curve_fitter = CurveFitter()
 plot_manager = PlotManager(curve_fitter)
 
 st.set_page_config(page_title='Compressor Curve Regression', layout='wide')
-st.title('Compressor Curve Regression Tool')
+st.title('Compressor Compressor Performance Maps Fitting Too')
 with st.sidebar:
     st.header("Blank Template")
     with open("AssetName_CC.xlsx", "rb") as file:

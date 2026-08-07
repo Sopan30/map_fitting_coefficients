@@ -65,7 +65,7 @@ else:
 
 method = st.sidebar.selectbox('Regression Method',
     ['Auto Best Fit','Linear','Quadratic','Cubic','4th Order','5th Order','Spline'])
-points = st.sidebar.slider('Number of Points',10,50,15)
+points = st.sidebar.slider('Number of Points',10,50,20)
 file = st.file_uploader('Upload Performance Curve Template', type=['xlsx'])
 
 if file:

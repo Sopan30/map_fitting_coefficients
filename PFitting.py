@@ -38,9 +38,7 @@ class PFitting:
         q_grid, p_grid = np.arange(0.8, 1.2 + 1e-9, 0.01), np.arange(2.8, 3.2 + 1e-9, 0.01)
         best_q, best_p, min_adjacent_dist_sq = 1.0, 3.0, float('inf')
         single_speed = (df['Nn'].nunique() == 1)
-        if single_speed:
-            best_q, best_p = 1.0, 3.0
-        else:
+        if not single_speed:
             for p_val in p_grid:
                 for q_val in q_grid:
                     X, Y = self.Qn / (self.Nn ** q_val), self.Pn / (self.Nn ** p_val)

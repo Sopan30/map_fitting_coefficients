@@ -44,7 +44,8 @@ class HpFitting:
         self.Nn = df['Nn'].to_numpy()
         self.Qn = df['Qn'].to_numpy()
         self.Hp = df['Hp'].to_numpy()
-        if df['Nn'].nunique() == 1:
+        single_speed = (df['Nn'].nunique() == 1)
+        if single_speed:
             best_q, best_h = 1.0, 2.0
         else:       
             q_grid = np.arange(0.8, 1.2 + 1e-9, 0.01)
@@ -78,24 +79,26 @@ class HpFitting:
         else:
             self.q_scale, self.hp_scale = 1.0, 1.0
 
-        X_coarse_scaled = Qr_coarse * self.q_scale
-        Y_coarse_scaled = Hpr_coarse * self.hp_scale
-        sort_indices = np.argsort(X_coarse_scaled)
-        node_x_init = np.linspace(np.min(X_coarse_scaled), np.max(X_coarse_scaled), num=11)
-        node_y_init = np.interp(node_x_init, X_coarse_scaled[sort_indices], Y_coarse_scaled[sort_indices])
-        initial_vector_plf = np.concatenate(([self.q_exp, self.hp_exp], node_y_init))
-        def plf_joint_objective(params):
-            q_e, h_e, node_y = float(params[0]), float(params[1]), params[2:]
-            X_curr = (self.Qn / (self.Nn ** q_e)) * self.q_scale
-            Y_curr = (self.Hp / (self.Nn ** h_e)) * self.hp_scale
-            sort_loop = np.argsort(X_curr)
-            X_sorted = X_curr[sort_loop]
-            Y_sorted = Y_curr[sort_loop]
-            node_x_curr = np.linspace(np.min(X_sorted), np.max(X_sorted), num=11)
-            Y_fit_curr = np.interp(X_sorted, node_x_curr, node_y)
-            return np.sum((Y_sorted - Y_fit_curr) ** 2)
-        res_plf = minimize(plf_joint_objective, initial_vector_plf, method='Nelder-Mead', options={'maxiter': 3000, 'xatol': 1e-8, 'fatol': 1e-8})
-        self.q_exp, self.hp_exp = float(res_plf.x[0]), float(res_plf.x[1])
+        if not single_speed:
+            X_coarse_scaled = Qr_coarse * self.q_scale
+            Y_coarse_scaled = Hpr_coarse * self.hp_scale
+            sort_indices = np.argsort(X_coarse_scaled)
+            node_x_init = np.linspace(np.min(X_coarse_scaled), np.max(X_coarse_scaled), num=11)
+            node_y_init = np.interp(node_x_init, X_coarse_scaled[sort_indices], Y_coarse_scaled[sort_indices])
+            initial_vector_plf = np.concatenate(([self.q_exp, self.hp_exp], node_y_init))
+            def plf_joint_objective(params):
+                q_e, h_e, node_y = float(params[0]), float(params[1]), params[2:]
+                X_curr = (self.Qn / (self.Nn ** q_e)) * self.q_scale
+                Y_curr = (self.Hp / (self.Nn ** h_e)) * self.hp_scale
+                sort_loop = np.argsort(X_curr)
+                X_sorted = X_curr[sort_loop]
+                Y_sorted = Y_curr[sort_loop]
+                node_x_curr = np.linspace(np.min(X_sorted), np.max(X_sorted), num=11)
+                Y_fit_curr = np.interp(X_sorted, node_x_curr, node_y)
+                return np.sum((Y_sorted - Y_fit_curr) ** 2)
+            res_plf = minimize(plf_joint_objective, initial_vector_plf, method='Nelder-Mead', options={'maxiter': 3000, 'xatol': 1e-8, 'fatol': 1e-8})
+            self.q_exp, self.hp_exp = float(res_plf.x[0]), float(res_plf.x[1])
+        
         X_fine = (self.Qn / (self.Nn ** self.q_exp)) * self.q_scale
         Y_fine = (self.Hp / (self.Nn ** self.hp_exp)) * self.hp_scale
 

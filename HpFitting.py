@@ -43,22 +43,25 @@ class HpFitting:
     def execute_pipeline(self,df):
         self.Nn = df['Nn'].to_numpy()
         self.Qn = df['Qn'].to_numpy()
-        self.Hp = df['Hp'].to_numpy()       
-        q_grid = np.arange(0.8, 1.2 + 1e-9, 0.01)
-        h_grid = np.arange(1.8, 2.2 + 1e-9, 0.01)
-        best_q, best_h = 1.0, 2.0
-        min_adjacent_dist_sq = float('inf')
-        
-        for h_val in h_grid:
-            for q_val in q_grid:
-                X = self.Qn / (self.Nn ** q_val)
-                Y = self.Hp / (self.Nn ** h_val)
-                sort_idx = np.argsort(X)
-                dist_sq = np.diff(X[sort_idx])**2 + np.diff(Y[sort_idx])**2
-                total_dist = np.sum(dist_sq)
-                if total_dist < min_adjacent_dist_sq:
-                    min_adjacent_dist_sq = total_dist
-                    best_q, best_h = q_val, h_val
+        self.Hp = df['Hp'].to_numpy()
+        if df['Nn'].nunique() == 1:
+            best_q, best_h = 1.0, 2.0
+        else:       
+            q_grid = np.arange(0.8, 1.2 + 1e-9, 0.01)
+            h_grid = np.arange(1.8, 2.2 + 1e-9, 0.01)
+            best_q, best_h = 1.0, 2.0
+            min_adjacent_dist_sq = float('inf')
+            
+            for h_val in h_grid:
+                for q_val in q_grid:
+                    X = self.Qn / (self.Nn ** q_val)
+                    Y = self.Hp / (self.Nn ** h_val)
+                    sort_idx = np.argsort(X)
+                    dist_sq = np.diff(X[sort_idx])**2 + np.diff(Y[sort_idx])**2
+                    total_dist = np.sum(dist_sq)
+                    if total_dist < min_adjacent_dist_sq:
+                        min_adjacent_dist_sq = total_dist
+                        best_q, best_h = q_val, h_val
                     
         self.q_exp, self.hp_exp = best_q, best_h
 

@@ -37,7 +37,8 @@ class PFitting:
         self.Nn, self.Qn, self.Pn = df['Nn'].to_numpy(), df['Qn'].to_numpy(), df['Pn'].to_numpy()
         q_grid, p_grid = np.arange(0.8, 1.2 + 1e-9, 0.01), np.arange(2.8, 3.2 + 1e-9, 0.01)
         best_q, best_p, min_adjacent_dist_sq = 1.0, 3.0, float('inf')
-        if df['Nn'].nunique() == 1:
+        single_speed = (df['Nn'].nunique() == 1)
+        if single_speed:
             best_q, best_p = 1.0, 3.0
         else:
             for p_val in p_grid:
@@ -56,20 +57,21 @@ class PFitting:
         else:
             self.q_scale = round2(Pnrmax / Qnrmax) if Pnrmax > Qnrmax else 1.0
             self.p_scale = 1.0 if Pnrmax > Qnrmax else round2(Qnrmax / Pnrmax)
-        X_coarse_scaled, Y_coarse_scaled = Qr_coarse * self.q_scale, Pr_coarse * self.p_scale
-        sort_indices = np.argsort(X_coarse_scaled)
-        node_x_init = np.linspace(np.min(X_coarse_scaled), np.max(X_coarse_scaled), num=11)
-        node_y_init = np.interp(node_x_init, X_coarse_scaled[sort_indices], Y_coarse_scaled[sort_indices])
-        initial_vector_plf = np.concatenate(([self.q_exp, self.p_exp], node_y_init))
-        def plf_joint_objective(params):
-            q_e, p_e, node_y = float(params[0]), float(params[1]), params[2:]
-            X_curr, Y_curr = (self.Qn / (self.Nn ** q_e)) * self.q_scale, (self.Pn / (self.Nn ** p_e)) * self.p_scale
-            sort_loop = np.argsort(X_curr)
-            X_sorted, Y_sorted = X_curr[sort_loop], Y_curr[sort_loop]
-            node_x_curr = np.linspace(np.min(X_sorted), np.max(X_sorted), num=11)
-            return np.sum((Y_sorted - np.interp(X_sorted, node_x_curr, node_y)) ** 2)
-        res_plf = minimize(plf_joint_objective, initial_vector_plf, method='Nelder-Mead', options={'maxiter': 3000, 'xatol': 1e-8, 'fatol': 1e-8})
-        self.q_exp, self.p_exp, node_y_refined = float(res_plf.x[0]), float(res_plf.x[1]), res_plf.x[2:]
+        if not single_speed:
+            X_coarse_scaled, Y_coarse_scaled = Qr_coarse * self.q_scale, Pr_coarse * self.p_scale
+            sort_indices = np.argsort(X_coarse_scaled)
+            node_x_init = np.linspace(np.min(X_coarse_scaled), np.max(X_coarse_scaled), num=11)
+            node_y_init = np.interp(node_x_init, X_coarse_scaled[sort_indices], Y_coarse_scaled[sort_indices])
+            initial_vector_plf = np.concatenate(([self.q_exp, self.p_exp], node_y_init))
+            def plf_joint_objective(params):
+                q_e, p_e, node_y = float(params[0]), float(params[1]), params[2:]
+                X_curr, Y_curr = (self.Qn / (self.Nn ** q_e)) * self.q_scale, (self.Pn / (self.Nn ** p_e)) * self.p_scale
+                sort_loop = np.argsort(X_curr)
+                X_sorted, Y_sorted = X_curr[sort_loop], Y_curr[sort_loop]
+                node_x_curr = np.linspace(np.min(X_sorted), np.max(X_sorted), num=11)
+                return np.sum((Y_sorted - np.interp(X_sorted, node_x_curr, node_y)) ** 2)
+            res_plf = minimize(plf_joint_objective, initial_vector_plf, method='Nelder-Mead', options={'maxiter': 3000, 'xatol': 1e-8, 'fatol': 1e-8})
+            self.q_exp, self.p_exp, node_y_refined = float(res_plf.x[0]), float(res_plf.x[1]), res_plf.x[2:]
         X_fine, Y_fine = (self.Qn / (self.Nn ** self.q_exp)) * self.q_scale, (self.Pn / (self.Nn ** self.p_exp)) * self.p_scale
         Qr_min_bound, Qr_max_bound = np.min(X_fine), np.max(X_fine)
         # self.QrJoin1 = Qr_min_bound + 0.25 * (X_fine[np.argmax(Y_fine)] - Qr_min_bound) if Srgp else Qr_min_bound
@@ -78,7 +80,7 @@ class PFitting:
         self.QrJoin2 = Qr_min_bound + 0.75 * (np.max(X_fine) - np.min(X_fine)) if Swrp else Qr_max_bound
         test_x_norm = np.linspace(self.QrJoin1, self.QrJoin2, num=4)
         PrPLF_Nodes = np.interp(test_x_norm, X_fine, Y_fine)
-        N1_i, G10_val = 2.0, float(np.max(node_y_refined))
+        N1_i, G10_val = 2.0, float(np.max(Y_fine)) if single_speed else float(np.max(node_y_refined))
         if Swrp:
             ratio_val = (float(PrPLF_Nodes[0]) - G10_val) / (float(PrPLF_Nodes[-1]) - G10_val)
             denom = (1.0 + (abs(ratio_val) ** (1.0 / N1_i)))

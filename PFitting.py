@@ -37,13 +37,16 @@ class PFitting:
         self.Nn, self.Qn, self.Pn = df['Nn'].to_numpy(), df['Qn'].to_numpy(), df['Pn'].to_numpy()
         q_grid, p_grid = np.arange(0.8, 1.2 + 1e-9, 0.01), np.arange(2.8, 3.2 + 1e-9, 0.01)
         best_q, best_p, min_adjacent_dist_sq = 1.0, 3.0, float('inf')
-        for p_val in p_grid:
-            for q_val in q_grid:
-                X, Y = self.Qn / (self.Nn ** q_val), self.Pn / (self.Nn ** p_val)
-                sort_idx = np.argsort(X)
-                dist_sq = np.sum(np.diff(X[sort_idx])**2 + np.diff(Y[sort_idx])**2)
-                if dist_sq < min_adjacent_dist_sq:
-                    min_adjacent_dist_sq, best_q, best_p = dist_sq, q_val, p_val
+        if df['Nn'].nunique() == 1:
+            best_q, best_p = 1.0, 3.0
+        else:
+            for p_val in p_grid:
+                for q_val in q_grid:
+                    X, Y = self.Qn / (self.Nn ** q_val), self.Pn / (self.Nn ** p_val)
+                    sort_idx = np.argsort(X)
+                    dist_sq = np.sum(np.diff(X[sort_idx])**2 + np.diff(Y[sort_idx])**2)
+                    if dist_sq < min_adjacent_dist_sq:
+                        min_adjacent_dist_sq, best_q, best_p = dist_sq, q_val, p_val
         self.q_exp, self.p_exp = best_q, best_p
         Qr_coarse, Pr_coarse = self.Qn / (self.Nn ** self.q_exp), self.Pn / (self.Nn ** self.p_exp)
         Qnrmax, Pnrmax = np.max(Qr_coarse), np.max(Pr_coarse)

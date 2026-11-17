@@ -27,7 +27,7 @@ class UnitConverter:
         'in': 0.0254, 'inch': 0.0254, 'inches': 0.0254,
         'm': 1.0, 'meter': 1.0, 'metre': 1.0, 'meters': 1.0, 'metres': 1.0,
         'mm': 0.001,
-        'kj/kg': 101.9716, 'j/kg': 0.1019716,
+        'kj/kg': 101.9716, 'j/kg': 0.1019716,'j/g':101.9716,
         'btu/lb': 237.2075,
     }
 
